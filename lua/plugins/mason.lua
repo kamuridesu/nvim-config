@@ -38,6 +38,7 @@ return {
 				"groovyls",
 				"helm_ls",
 				"terraformls",
+				"jdtls",
 			},
 		})
 
