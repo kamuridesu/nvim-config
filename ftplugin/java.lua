@@ -1,3 +1,5 @@
+LOMBOK_PATH = "~/.local/share/nvim/mason/packages/jdtls/lombok.jar"
+
 local config = {
 	cmd = {
 		"java",
@@ -6,6 +8,7 @@ local config = {
 		"-Declipse.product=org.eclipse.jdt.ls.core.product",
 		"-Dlog.protocol=true",
 		"-Dlog.level=ALL",
+		"-javaagent:" .. LOMBOK_PATH,
 		"-Xmx4g",
 		"--add-modules=ALL-SYSTEM",
 		"--add-opens",
@@ -80,7 +83,6 @@ local config = {
 	init_options = {
 		bundles = {
 			-- Add any extra bundles here (e.g., lombok.jar)
-			-- vim.fn.glob("~/.local/share/nvim/mason/packages/jdtls/lombok.jar"),
 		},
 	},
 }
