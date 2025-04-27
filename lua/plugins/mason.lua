@@ -39,6 +39,7 @@ return {
 				"helm_ls",
 				"terraformls",
 				"jdtls",
+				"csharp_ls",
 			},
 		})
 
@@ -111,6 +112,12 @@ return {
 			end,
 			["terraformls"] = function()
 				require("lspconfig").terraformls.setup({
+					on_attach = on_attach,
+					capabilities = capabilities,
+				})
+			end,
+			["csharp_ls"] = function()
+				require("lspconfig").csharp_ls.setup({
 					on_attach = on_attach,
 					capabilities = capabilities,
 				})
