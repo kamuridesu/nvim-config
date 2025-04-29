@@ -24,26 +24,42 @@ return {
 			end
 		end
 
-		mason_lspconfig.setup({
-			automatic_installation = true,
-			ensure_installed = {
-				"eslint",
-				"html",
-				"jsonls",
-				"pyright",
-				"gopls",
-				"ast_grep",
-				"bashls",
-				"docker_compose_language_service",
-				"groovyls",
-				"helm_ls",
-				"terraformls",
-				"jdtls",
-				"csharp_ls",
-			},
-		})
+		local function trim(s)
+			return (s:gsub("^%s*(.-)%s*$", "%1"))
+		end
 
-		mason_lspconfig.setup_handlers({
+		local function read_hostname_file()
+			local file = io.open("/etc/hostname", "r")
+			local content = file:read("*all")
+			file:close()
+			return trim(content)
+		end
+
+		local function read_hostname_cmd()
+			local cmd = io.popen("hostname")
+			local hostname = cmd:read("*all")
+			cmd:close()
+			return trim(hostname)
+		end
+
+		local hostname = read_hostname_file() or read_hostname_cmd()
+
+		local common_lsp = {
+			"eslint",
+			"html",
+			"jsonls",
+			"pyright",
+			"gopls",
+			"ast_grep",
+			"bashls",
+			"docker_compose_language_service",
+			"groovyls",
+			"helm_ls",
+			"terraformls",
+			"jdtls",
+		}
+
+		local handlers = {
 			function(server_name)
 				require("lspconfig")[server_name].setup({
 					capabilities = capabilities,
@@ -116,13 +132,33 @@ return {
 					capabilities = capabilities,
 				})
 			end,
-			["csharp_ls"] = function()
+		}
+
+		local function kamint_custom_config() end
+
+		local function dainsleif_custom_config()
+			table.insert(common_lsp, "csharp_ls")
+			handlers["csharp_ls"] = function()
 				require("lspconfig").csharp_ls.setup({
 					on_attach = on_attach,
 					capabilities = capabilities,
 				})
-			end,
+			end
+		end
+
+		local hostsmap = {
+			kamint = kamint_custom_config,
+			dainsleif = dainsleif_custom_config,
+		}
+
+		hostsmap[hostname]()
+
+		mason_lspconfig.setup({
+			automatic_installation = true,
+			ensure_installed = common_lsp,
 		})
+
+		mason_lspconfig.setup_handlers(handlers)
 
 		require("mason-tool-installer").setup({
 			ensure_installed = {
