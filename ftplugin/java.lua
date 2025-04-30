@@ -2,8 +2,7 @@ local HOME = os.getenv("HOME")
 local JDTLS_FOLDER = HOME .. "/.local/share/nvim/mason/packages/jdtls/"
 local CONFIG_FOLDER = JDTLS_FOLDER .. "config_linux"
 local LOMBOK_PATH = "/home/kamuri/Downloads/lombok.jar"
-print(vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"))
--- vim.env.JAVA_TOOL_OPTIONS = "-javaagent:" .. LOMBOK_PATH
+--vim.env.JAVA_TOOL_OPTIONS = "-javaagent:" .. LOMBOK_PATH
 local config = {
 	cmd = {
 		os.getenv("JAVA_HOME") .. "/bin/java",
@@ -14,24 +13,18 @@ local config = {
 		"-Dlog.level=ALL",
 		"-javaagent:" .. LOMBOK_PATH,
 		"-Xmx4g",
+		"-jar",
+		vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
+		"-configuration",
+		vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/config_linux"),
+		"-data",
+		vim.fn.expand("~/.workspace/"),
 		"--add-modules=ALL-SYSTEM",
 		"--add-opens",
 		"java.base/java.util=ALL-UNNAMED",
 		"--add-opens",
 		"java.base/java.lang=ALL-UNNAMED",
-
-		-- Path to JDTLS plugin
-		"-jar",
-		vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
-
-		-- Configuration directory
-		"-configuration",
-		vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/config_linux"),
-		"-data",
-		vim.fn.expand("~/.workspace/"),
-		-- "--jvm-arg=" .. string.format("-javaagent:%s", LOMBOK_PATH),
 	},
-
 	root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml" }),
 
 	settings = {
@@ -90,12 +83,8 @@ local config = {
 		},
 	},
 
-	-- Language server initialization options
 	init_options = {
-		bundles = {
-			-- Add any extra bundles here (e.g., lombok.jar)
-			-- vim.fn.expand(LOMBOK_PATH),
-		},
+		bundles = {},
 	},
 }
 

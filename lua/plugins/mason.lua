@@ -46,6 +46,8 @@ return {
 
 		local common_lsp = {
 			"eslint",
+			"tailwindcss",
+			"sumneko_lua",
 			"html",
 			"jsonls",
 			"pyright",
@@ -68,6 +70,18 @@ return {
 			end,
 			["html"] = function()
 				require("lspconfig").html.setup({
+					capabilities = capabilities,
+					on_attach = on_attach,
+				})
+			end,
+			["tailwindcss"] = function()
+				require("lspconfig").tailwindcss.setup({
+					capabilities = capabilities,
+					on_attach = on_attach,
+				})
+			end,
+			["sumneko_lua"] = function()
+				require("lspconfig").sumneko_lua.setup({
 					capabilities = capabilities,
 					on_attach = on_attach,
 				})
