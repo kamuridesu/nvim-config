@@ -1,8 +1,12 @@
-LOMBOK_PATH = "~/.local/share/nvim/mason/packages/jdtls/lombok.jar"
-
+local HOME = os.getenv("HOME")
+local JDTLS_FOLDER = HOME .. "/.local/share/nvim/mason/packages/jdtls/"
+local CONFIG_FOLDER = JDTLS_FOLDER .. "config_linux"
+local LOMBOK_PATH = "/home/kamuri/Downloads/lombok.jar"
+print(vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"))
+-- vim.env.JAVA_TOOL_OPTIONS = "-javaagent:" .. LOMBOK_PATH
 local config = {
 	cmd = {
-		"java",
+		os.getenv("JAVA_HOME") .. "/bin/java",
 		"-Declipse.application=org.eclipse.jdt.ls.core.id1",
 		"-Dosgi.bundles.defaultStartLevel=4",
 		"-Declipse.product=org.eclipse.jdt.ls.core.product",
@@ -25,12 +29,16 @@ local config = {
 		vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/config_linux"),
 		"-data",
 		vim.fn.expand("~/.workspace/"),
+		-- "--jvm-arg=" .. string.format("-javaagent:%s", LOMBOK_PATH),
 	},
 
-	root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew" }),
+	root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml" }),
 
 	settings = {
 		java = {
+			lombok = {
+				enabled = true,
+			},
 			signatureHelp = { enabled = true },
 			contentProvider = { preferred = "fernflower" },
 			completion = {
@@ -41,6 +49,7 @@ local config = {
 					"org.junit.jupiter.api.Assertions.*",
 					"java.util.Objects.requireNonNull",
 					"java.util.Objects.requireNonNullElse",
+					"java.util.Collections",
 					"org.mockito.Mockito.*",
 				},
 			},
@@ -54,6 +63,8 @@ local config = {
 				toString = {
 					template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
 				},
+				["hashCodeEquals.useJava7Objects"] = true,
+				useBlocks = true,
 			},
 			configuration = {
 				runtimes = {
@@ -67,7 +78,7 @@ local config = {
 						path = "~/.sdkman/candidates/java/11.0.23-tem/",
 					},
 					{
-						name = "JavaSE-8",
+						name = "JavaSE-1.8",
 						path = "~/.sdkman/candidates/java/8.0.442-tem/",
 					},
 					{
@@ -83,11 +94,18 @@ local config = {
 	init_options = {
 		bundles = {
 			-- Add any extra bundles here (e.g., lombok.jar)
+			-- vim.fn.expand(LOMBOK_PATH),
 		},
 	},
 }
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+capabilities.workspace = {
+	configuration = true,
+	["didChangeWatchedFiles.dynamicRegistration"] = true,
+	["didChangeConfiguration.dynamicRegistration"] = true,
+	["textDocument.completion.completionItem.snippetSupport"] = true,
+}
 
 require("jdtls").start_or_attach({
 	capabilities = capabilities,
