@@ -165,7 +165,10 @@ return {
 			dainsleif = dainsleif_custom_config,
 		}
 
-		hostsmap[hostname]()
+		host_setup_func = hostsmap[hostname]
+		if host_setup_func then
+			host_setup_func()
+		end
 
 		mason_lspconfig.setup({
 			automatic_installation = true,

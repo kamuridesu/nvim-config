@@ -1,7 +1,8 @@
 local HOME = os.getenv("HOME")
 local JDTLS_FOLDER = HOME .. "/.local/share/nvim/mason/packages/jdtls/"
 local CONFIG_FOLDER = JDTLS_FOLDER .. "config_linux"
-local LOMBOK_PATH = "/home/kamuri/Downloads/lombok.jar"
+-- local LOMBOK_PATH = "/home/kamuri/Downloads/lombok.jar"
+local LOMBOK_PATH = JDTLS_FOLDER .. "lombok.jar"
 --vim.env.JAVA_TOOL_OPTIONS = "-javaagent:" .. LOMBOK_PATH
 local config = {
 	cmd = {
