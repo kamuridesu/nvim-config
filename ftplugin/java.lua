@@ -1,9 +1,9 @@
 local HOME = os.getenv("HOME")
+local PROJECT_FOLDER = vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml" }) or ""
 local JDTLS_FOLDER = HOME .. "/.local/share/nvim/mason/packages/jdtls/"
 local CONFIG_FOLDER = JDTLS_FOLDER .. "config_linux"
--- local LOMBOK_PATH = "/home/kamuri/Downloads/lombok.jar"
 local LOMBOK_PATH = JDTLS_FOLDER .. "lombok.jar"
---vim.env.JAVA_TOOL_OPTIONS = "-javaagent:" .. LOMBOK_PATH
+vim.env.JAVA_TOOL_OPTIONS = "-javaagent:" .. LOMBOK_PATH
 local config = {
 	cmd = {
 		os.getenv("JAVA_HOME") .. "/bin/java",
@@ -15,18 +15,18 @@ local config = {
 		"-javaagent:" .. LOMBOK_PATH,
 		"-Xmx4g",
 		"-jar",
-		vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
+		vim.fn.glob(JDTLS_FOLDER .. "plugins/org.eclipse.equinox.launcher_*.jar"),
 		"-configuration",
-		vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls/config_linux"),
+		JDTLS_FOLDER .. "config_linux",
 		"-data",
-		vim.fn.expand("~/.workspace/"),
+		JDTLS_FOLDER .. vim.fn.fnamemodify(PROJECT_FOLDER, ":p:h:t"),
 		"--add-modules=ALL-SYSTEM",
 		"--add-opens",
 		"java.base/java.util=ALL-UNNAMED",
 		"--add-opens",
 		"java.base/java.lang=ALL-UNNAMED",
 	},
-	root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml" }),
+	root_dir = PROJECT_FOLDER,
 
 	settings = {
 		java = {
