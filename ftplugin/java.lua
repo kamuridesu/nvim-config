@@ -106,12 +106,24 @@ require("jdtls").start_or_attach({
 		end
 
 		local map = function(mode, lhs, rhs, desc)
-			vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+			vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc, noremap = true, silent = true })
 		end
 		map("n", "<leader>jo", '<Cmd>lua require("jdtls").organize_imports()<CR>', "Organize Imports")
 		map("n", "<leader>jv", '<Cmd>lua require("jdtls").extract_variable()<CR>', "Extract Variable")
 		map("n", "<leader>jc", '<Cmd>lua require("jdtls").test_class()<CR>', "Test Class")
 		map("n", "<leader>jm", '<Cmd>lua require("jdtls").test_nearest_method()<CR>', "Test Method")
+		map("n", "gD", vim.lsp.buf.declaration, "Show method declaration")
+		map("n", "gd", vim.lsp.buf.definition, "Go to method definition")
+		map("n", "gi", vim.lsp.buf.implementation, "Go to method implementation")
+		map("n", "gi", vim.lsp.buf.hover, "show hover")
+		map("n", "gr", vim.lsp.buf.references, "Show method references")
+		map("n", "gt", vim.lsp.buf.type_definition, "Type definition")
+		map("n", "<C-k>", vim.lsp.buf.signature_help, "Show method signatures")
+		map("n", "<leader>rn", vim.lsp.buf.rename, "Rename method/class")
+		map("n", "<leader>cf", function()
+			vim.lsp.buf.format({ async = tue })
+		end, "Format code")
+		map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action)
 	end,
 	cmd = config.cmd,
 	root_dir = config.root_dir,
