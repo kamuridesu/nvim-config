@@ -47,7 +47,7 @@ return {
 		local common_lsp = {
 			"eslint",
 			"tailwindcss",
-			"sumneko_lua",
+			"ts_ls",
 			"html",
 			"jsonls",
 			"pyright",
