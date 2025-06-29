@@ -59,6 +59,7 @@ return {
 			"helm_ls",
 			"terraformls",
 			"jdtls",
+			"terraform_lsp",
 		}
 
 		local handlers = {
