@@ -59,7 +59,6 @@ return {
 			"helm_ls",
 			"terraformls",
 			"jdtls",
-			"terraform_lsp",
 		}
 
 		local handlers = {
@@ -77,12 +76,6 @@ return {
 			end,
 			["tailwindcss"] = function()
 				require("lspconfig").tailwindcss.setup({
-					capabilities = capabilities,
-					on_attach = on_attach,
-				})
-			end,
-			["sumneko_lua"] = function()
-				require("lspconfig").sumneko_lua.setup({
 					capabilities = capabilities,
 					on_attach = on_attach,
 				})

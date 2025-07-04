@@ -32,9 +32,6 @@ return {
 			sync_install = false,
 			highlight = { enable = true, additional_vim_regex_highlight = false },
 			indent = { enable = true },
-			autotag = {
-				enable = true,
-			},
 			incremental_selection = {
 				enable = true,
 				keymaps = {
