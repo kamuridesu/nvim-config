@@ -1,14 +1,84 @@
-return {
-	"williamboman/mason.nvim",
-	dependencies = {
-		"williamboman/mason-lspconfig.nvim",
-		"WhoIsSethDaniel/mason-tool-installer.nvim",
-		"neovim/nvim-lspconfig",
-	},
-	config = function()
-		require("mason").setup()
+-- Trim string to remove trailing whitespace
+local function trim(s)
+	return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
 
-		local mason_lspconfig = require("mason-lspconfig")
+-- Reads hostname file
+local function read_hostname_file()
+	local file = io.open("/etc/hostname", "r")
+	local content = file:read("*all")
+	file:close()
+	return trim(content)
+end
+
+-- Reads hostname from `hostname` command
+local function read_hostname_cmd()
+	local cmd = io.popen("hostname")
+	local hostname = cmd:read("*all")
+	cmd:close()
+	return trim(hostname)
+end
+
+-- Tries to read hostname from file using the command as fallback
+local hostname = read_hostname_file() or read_hostname_cmd()
+
+-- Common LSP on all my hosts
+local common_lsp = {
+	"eslint",
+	"tailwindcss",
+	"ts_ls",
+	"html",
+	"jsonls",
+	"pyright",
+	"gopls",
+	"ast_grep",
+	"bashls",
+	"docker_compose_language_service",
+	"groovyls",
+	"helm_ls",
+	"terraformls",
+	"jdtls",
+	"lua_ls",
+	"cmake",
+	"yamlls",
+	"dockerls",
+}
+-- Kamint custom LSPs
+local function kamint_custom_config() end
+
+-- Dainsleif custom LSPs
+local function dainsleif_custom_config()
+	table.insert(common_lsp, "csharp_ls")
+end
+
+-- Maps the functions to their respective hosts
+local hostsmap = {
+	kamint = kamint_custom_config,
+	dainsleif = dainsleif_custom_config,
+}
+
+-- Calls the function to setup the LSPs for the current host
+host_setup_func = hostsmap[hostname]
+if host_setup_func then
+	host_setup_func()
+end
+
+-- Setup Mason LSP
+return {
+	"neovim/nvim-lspconfig",
+	dependencies = {
+		{
+			"mason-org/mason.nvim",
+			opts = {},
+		},
+		"mason-org/mason-lspconfig.nvim",
+		"hrsh7th/cmp-nvim-lsp",
+	},
+	opts = {
+		ensure_installed = common_lsp,
+	},
+
+	config = function(_, opts)
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 		-- Autoformat on save
@@ -24,162 +94,14 @@ return {
 			end
 		end
 
-		local function trim(s)
-			return (s:gsub("^%s*(.-)%s*$", "%1"))
+		for _, name in pairs(common_lsp) do
+			vim.lsp.config[name] = {
+				on_attach = on_attach,
+				capabilities = capabilities,
+			}
 		end
 
-		local function read_hostname_file()
-			local file = io.open("/etc/hostname", "r")
-			local content = file:read("*all")
-			file:close()
-			return trim(content)
-		end
-
-		local function read_hostname_cmd()
-			local cmd = io.popen("hostname")
-			local hostname = cmd:read("*all")
-			cmd:close()
-			return trim(hostname)
-		end
-
-		local hostname = read_hostname_file() or read_hostname_cmd()
-
-		local common_lsp = {
-			"eslint",
-			"tailwindcss",
-			"ts_ls",
-			"html",
-			"jsonls",
-			"pyright",
-			"gopls",
-			"ast_grep",
-			"bashls",
-			"docker_compose_language_service",
-			"groovyls",
-			"helm_ls",
-			"terraformls",
-			"jdtls",
-		}
-
-		local handlers = {
-			function(server_name)
-				require("lspconfig")[server_name].setup({
-					capabilities = capabilities,
-					on_attach = on_attach,
-				})
-			end,
-			["html"] = function()
-				require("lspconfig").html.setup({
-					capabilities = capabilities,
-					on_attach = on_attach,
-				})
-			end,
-			["tailwindcss"] = function()
-				require("lspconfig").tailwindcss.setup({
-					capabilities = capabilities,
-					on_attach = on_attach,
-				})
-			end,
-			["jsonls"] = function()
-				require("lspconfig").jsonls.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-			["eslint"] = function()
-				require("lspconfig").eslint.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-			["pyright"] = function()
-				require("lspconfig").pyright.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-			["gopls"] = function()
-				require("lspconfig").gopls.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-			["ast_grep"] = function()
-				require("lspconfig").ast_grep.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-			["bashls"] = function()
-				require("lspconfig").bashls.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-			["docker_compose_language_service"] = function()
-				require("lspconfig").docker_compose_language_service.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-			["groovyls"] = function()
-				require("lspconfig").groovyls.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-			["helm_ls"] = function()
-				require("lspconfig").helm_ls.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-			["terraformls"] = function()
-				require("lspconfig").terraformls.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end,
-		}
-
-		local function kamint_custom_config() end
-
-		local function dainsleif_custom_config()
-			table.insert(common_lsp, "csharp_ls")
-			handlers["csharp_ls"] = function()
-				require("lspconfig").csharp_ls.setup({
-					on_attach = on_attach,
-					capabilities = capabilities,
-				})
-			end
-		end
-
-		local hostsmap = {
-			kamint = kamint_custom_config,
-			dainsleif = dainsleif_custom_config,
-		}
-
-		host_setup_func = hostsmap[hostname]
-		if host_setup_func then
-			host_setup_func()
-		end
-
-		mason_lspconfig.setup({
-			automatic_installation = true,
-			ensure_installed = common_lsp,
-		})
-
-		mason_lspconfig.setup_handlers(handlers)
-
-		require("mason-tool-installer").setup({
-			ensure_installed = {
-				"prettier",
-				"stylua",
-				"isort",
-				"black",
-				"pylint",
-				"eslint_d",
-			},
-		})
+		require("mason").setup()
+		require("mason-lspconfig").setup()
 	end,
 }
