@@ -42,6 +42,8 @@ local common_lsp = {
 	"cmake",
 	"yamlls",
 	"dockerls",
+	"java-debug-adapter",
+	"google-java-format",
 }
 -- Kamint custom LSPs
 local function kamint_custom_config() end

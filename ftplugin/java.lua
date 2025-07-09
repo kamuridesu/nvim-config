@@ -3,7 +3,6 @@ local PROJECT_FOLDER = vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml" }) 
 local JDTLS_FOLDER = HOME .. "/.local/share/nvim/mason/packages/jdtls/"
 local CONFIG_FOLDER = JDTLS_FOLDER .. "config_linux"
 local LOMBOK_PATH = JDTLS_FOLDER .. "lombok.jar"
-vim.env.JAVA_TOOL_OPTIONS = "-javaagent:" .. LOMBOK_PATH
 local config = {
 	cmd = {
 		os.getenv("JAVA_HOME") .. "/bin/java",
@@ -85,7 +84,12 @@ local config = {
 	},
 
 	init_options = {
-		bundles = {},
+		bundles = {
+			vim.fn.glob(
+				HOME
+					.. "/.local/share/nvim/mason/packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar"
+			),
+		},
 	},
 }
 
