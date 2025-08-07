@@ -42,9 +42,9 @@ local common_lsp = {
 	"cmake",
 	"yamlls",
 	"dockerls",
+	"css_variables",
+	"cssls",
 }
--- Kamint custom LSPs
-local function kamint_custom_config() end
 
 -- Dainsleif custom LSPs
 local function dainsleif_custom_config()
@@ -53,7 +53,6 @@ end
 
 -- Maps the functions to their respective hosts
 local hostsmap = {
-	kamint = kamint_custom_config,
 	dainsleif = dainsleif_custom_config,
 }
 
