@@ -75,6 +75,22 @@ return {
 	},
 	opts = {
 		ensure_installed = common_lsp,
+        servers = {
+          dartls = {
+            cmd = {
+              "dart",
+              "language-server",
+              "--protocol=lsp",
+            },
+            init_options = {
+                onlyAnalyzeProjectsWithOpenFiles = true,
+        		suggestFromUnimportedLibraries = true,
+	    	    closingLabels = true,
+		        outline = true,
+        		flutterOutline = true,
+            },
+          },
+        },
 	},
 
 	config = function(_, opts)
