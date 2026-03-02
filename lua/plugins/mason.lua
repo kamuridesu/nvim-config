@@ -1,25 +1,3 @@
--- Trim string to remove trailing whitespace
-local function trim(s)
-	return (s:gsub("^%s*(.-)%s*$", "%1"))
-end
-
--- Reads hostname file
-local function read_hostname_file()
-	local file = io.open("/etc/hostname", "r")
-	local content = file:read("*all")
-	file:close()
-	return trim(content)
-end
-
--- Reads hostname from `hostname` command
-local function read_hostname_cmd()
-	local cmd = io.popen("hostname")
-	local hostname = cmd:read("*all")
-	cmd:close()
-	return trim(hostname)
-end
-
--- Tries to read hostname from file using the command as fallback
 local hostname = read_hostname_file() or read_hostname_cmd()
 
 -- Common LSP on all my hosts
@@ -51,13 +29,11 @@ local function dainsleif_custom_config()
 	table.insert(common_lsp, "csharp_ls")
 end
 
--- Maps the functions to their respective hosts
 local hostsmap = {
 	dainsleif = dainsleif_custom_config,
 }
 
--- Calls the function to setup the LSPs for the current host
-host_setup_func = hostsmap[hostname]
+    host_setup_func = hostsmap[hostname]
 if host_setup_func then
 	host_setup_func()
 end

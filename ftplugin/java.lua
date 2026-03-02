@@ -1,5 +1,7 @@
 local HOME = os.getenv("HOME")
 local PROJECT_FOLDER = vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml" }) or ""
+local PROJECT_NAME = vim.fn.fnamemodify(PROJECT_FOLDER, ":p:t")
+local WORKSPACE_DIR = HOME .. "/.local/share/eclipse/" .. PROJECT_NAME
 local JDTLS_FOLDER = HOME .. "/.local/share/nvim/mason/packages/jdtls/"
 local CONFIG_FOLDER = JDTLS_FOLDER .. "config_linux"
 local LOMBOK_PATH = JDTLS_FOLDER .. "lombok.jar"
@@ -31,7 +33,7 @@ local config = {
 		"-configuration",
 		JDTLS_FOLDER .. "config_linux",
 		"-data",
-		JDTLS_FOLDER .. vim.fn.fnamemodify(PROJECT_FOLDER, ":p:h:t"),
+		WORKSPACE_DIR,
 		"--add-modules=ALL-SYSTEM",
 		"--add-opens",
 		"java.base/java.util=ALL-UNNAMED",
@@ -74,7 +76,6 @@ local config = {
 			},
 			configuration = {
 				runtimes = {
-					-- Configure your Java runtime versions here
 					{
 						name = "JavaSE-17",
 						path = "~/.sdkman/candidates/java/17.0.14-tem/",

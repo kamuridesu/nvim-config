@@ -18,6 +18,7 @@ return {
 				lua = { "stylua" },
 				python = { "isort", "black" },
 				dart = { "dart_format" },
+				xml = { "xmlformatter" },
 			},
 			format_on_save = {
 				lsp_fallback = true,
